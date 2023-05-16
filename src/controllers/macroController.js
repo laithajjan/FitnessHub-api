@@ -12,12 +12,15 @@ const calculateBMR = (age, gender, height, weight) => {
 };
 
 const calculateMacros = (calories, proteinPercentage, carbPercentage, fatPercentage) => {
+  calories = parseFloat(calories); 
+
   const proteinGrams = Math.round((calories * proteinPercentage) / 4);
   const carbGrams = Math.round((calories * carbPercentage) / 4);
   const fatGrams = Math.round((calories * fatPercentage) / 9);
 
   return { protein: proteinGrams, carbs: carbGrams, fat: fatGrams };
 };
+
 
 exports.calculateMacros = (req, res) => {
   const { age, gender, height, weight, activityLevel, goal, unit } = req.body;
@@ -64,9 +67,9 @@ exports.calculateMacros = (req, res) => {
   const highProteinMacros = calculateMacros(goalCalories, 0.4, 0.3, 0.3);
 
   res.json({
-    'Balanced': balancedMacros,
-    'Low Fat': lowFatMacros,
-    'Low Carb': lowCarbMacros,
-    'High Protein': highProteinMacros,
-  });
+    'Balanced': { ...balancedMacros, calories: goalCalories },
+    'Low Fat': { ...lowFatMacros, calories: goalCalories },
+    'Low Carb': { ...lowCarbMacros, calories: goalCalories },
+    'High Protein': { ...highProteinMacros, calories: goalCalories },
+  });  
 };
